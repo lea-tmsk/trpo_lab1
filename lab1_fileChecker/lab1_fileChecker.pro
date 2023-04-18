@@ -8,7 +8,6 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        consolelog.cpp \
         filechecker.cpp \
         main.cpp
 
@@ -19,4 +18,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     consolelog.h \
-    filechecker.h
+    filechecker.h \
+    logger.h

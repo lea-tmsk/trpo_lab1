@@ -1,17 +1,14 @@
 #ifndef CONSOLELOG_H
 #define CONSOLELOG_H
 #include <QFile>
+#include "logger.h"
 
-class ConsoleLog
+class ConsoleLog : public ILogger
 {
 public:
-    ConsoleLog() {};
-    ~ConsoleLog() {};
-
-    void static fileFirstState(bool exists, qint64 size = 0);
-    void static onFileCreate(qint64 size);
-    void static onFileDelete();
-    void static onFileChange(qint64 newSize, qint64 oldSize);
-};
+    void log(std::string msg) {
+        std::cout << msg << std::endl;
+    };
+} console;
 
 #endif // CONSOLELOG_H
