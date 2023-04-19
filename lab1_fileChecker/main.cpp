@@ -13,20 +13,31 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QString currentExecDir = a.applicationDirPath();                        //файл ищем в директории проекта
-    qDebug() << "Enter file name: ";                                        //спрашиваем у пользователя имя файла
-    QString fileName;
+    FileChecker checker(&console);                                          //создаем объект класса с выбором метода логирования
+
+    qDebug() << "Enter file name. Write 'stop' to end. \n";                 //спрашиваем у пользователя имя файла
     std::string temp;
     std::getline(std::cin, temp);
-    std::cout << std::endl << temp << std::endl;
-    fileName = QString::fromStdString(temp);
-    QFile file(currentExecDir + '/' + fileName);
-    qDebug() << "Location:" << currentExecDir + '/' + fileName;             //полный путь до файла
+    QString fileName;
 
-    FileChecker checker(file, &console);                                    //создаем объект класса, который будет проверять состояние файла по указанному пути, с выбором метода логирования
+    while (temp != "stop") {
+        std::cout << std::endl << temp << std::endl;
+        fileName = QString::fromStdString(temp);
+        QString filePath = currentExecDir + '/' + fileName;
+        bool wasAdded = checker.addFile(filePath);
+        if (wasAdded) {
+            qDebug() << "Location:" << currentExecDir + '/' + fileName;     //полный путь до файла
+        }
+        std::getline(std::cin, temp);
+    }
 
-    while (true) {                                                          //в цикле каждые 100мс проверяем состояние файла
-        checker.checkFile(file);
+    while (true && checker.isEmpty() == false) {                                                          //в цикле каждые 100мс проверяем состояние файла
+        checker.checkFiles();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    if (checker.isEmpty()) {
+        std::cout << "No files to check" << std::endl;
     }
 
     return a.exec();
