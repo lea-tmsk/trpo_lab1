@@ -6,7 +6,7 @@ FileChecker::FileChecker(ILogger *log) {
     if (log != nullptr) {
         this->m_log = log;
     } else {
-        //TODO: throw exception
+        throw std::runtime_error("log is nullptr");
     }
 }
 
@@ -17,8 +17,13 @@ FileChecker::FileChecker(const QString filePath, ILogger* log) {
         FileInfo fileInfo = {filePath, file.exists(), file.size()};
         this->m_files_info.append(fileInfo);
     } else {
-        return;
-       //TODO: throw exception
+        if (filePath == nullptr) {
+            throw std::runtime_error("filePath is nullptr");
+        } else if (filePath.length() == 0) {
+            throw std::runtime_error("filePath is an empty string");
+        } else {
+            throw std::runtime_error("log is nullptr");
+        }
     }
 }
 
@@ -32,9 +37,11 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
             this->m_files_info.append(currentFileInfo);
         }
     } else {
-        return;
-        //TODO
-        //throw exception
+        if (filesPaths.length() == 0) {
+            throw std::runtime_error("QVector is empty");
+        } else {
+            throw std::runtime_error("log is nullptr");
+        }
     }
 }
 
