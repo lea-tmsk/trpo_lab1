@@ -10,6 +10,18 @@ FileChecker::FileChecker(ILogger *log) {
     }
 }
 
+FileChecker::FileChecker(const QString filePath, ILogger* log) {
+    if (filePath.length() > 0 && log != nullptr) {
+        this->m_log = log;
+        QFile file(filePath);
+        FileInfo fileInfo = {filePath, file.exists(), file.size()};
+        this->m_files_info.append(fileInfo);
+    } else {
+        return;
+       //TODO: throw exception
+    }
+}
+
 FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
     if (filesPaths.length() > 0 && log != nullptr) {
         this->m_log = log;
@@ -26,32 +38,21 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
     }
 }
 
-FileChecker::FileChecker(const QString filePath, ILogger* log) {
-    if (filePath.length() > 0 && log != nullptr) {
-        this->m_log = log;
-        QFile file(filePath);
-        FileInfo fileInfo = {filePath, file.exists(), file.size()};
-        this->m_files_info.append(fileInfo);
-    } else {
-        return;
-       //TODO: throw exception
-    }
-}
-
 void FileChecker::checkFiles() {
     for (auto i = 0; i < m_files_info.length(); i++) {
         QString fileName = m_files_info[i].m_path.replace(QRegExp("(.+/.+/)"), "");
         if (m_files_info[i].m_file->exists() == m_files_info[i].m_exists) {
             if (m_files_info[i].m_exists && m_files_info[i].m_size != m_files_info[i].m_file->size()) {
-                m_log->log("\nFile " + fileName.toStdString() + " changed. \nOld size: " + std::to_string(m_files_info[i].m_size) + "\nNew size: " + std::to_string(m_files_info[i].m_file->size()));
+                emit fileChanged("\nFile '" + fileName.toStdString() + "' changed. \nOld size: " + std::to_string(m_files_info[i].m_size) + " bytes" +
+                                 + "\nNew size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
                 m_files_info[i].m_size = m_files_info[i].m_file->size();
             }
         } else {
             if (m_files_info[i].m_exists == true) {
-                m_log->log("\nFile " + fileName.toStdString() + " deleted.");
+                emit fileChanged("\nFile '" + fileName.toStdString() + "' deleted.");
                 m_files_info[i].m_exists = false;
             } else {
-                m_log->log("\nFile " + fileName.toStdString() + " created. Size: " + std::to_string(m_files_info[i].m_file->size()));
+                emit fileChanged("\nFile '" + fileName.toStdString() + "' created. Size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
                 m_files_info[i].m_exists = true;
                 m_files_info[i].m_size = m_files_info[i].m_file->size();
             }
@@ -60,24 +61,31 @@ void FileChecker::checkFiles() {
 }
 
 bool FileChecker::addFile(const QString filePath) {
-    if (filePath == "") {
+    QString fileName = filePath;
+    fileName = fileName.replace(QRegExp("(.+/.+/)"), "");
+
+    if (fileName == "") {
         return false;
     }
     QFile file(filePath);
-    QString fileName = filePath;
-    fileName = fileName.replace(QRegExp("(.+/.+/)"), "");
-    m_files_info.append(FileInfo {filePath, file.exists(), file.size()});
-    if (file.exists()) {
-        m_log->log("Added file " + fileName.toStdString() + " exists. Size: " + std::to_string(file.size()));
-    } else {
-        m_log->log("Added file " + fileName.toStdString() + " doesn't exist.");
+    try {
+        m_files_info.append(FileInfo {filePath, file.exists(), file.size()});
+        if (file.exists()) {
+            m_log->log("File added. '" + fileName.toStdString() + "' exists. Size: " + std::to_string(file.size()) + " bytes");
+        } else {
+            m_log->log("File added. '" + fileName.toStdString() + "' doesn't exist.");
+        }
+    }  catch (const std::exception& ex) {
+        return false;
     }
     return true;
 }
 
-bool FileChecker::removeFile(const QString filePath)
-{
-    if (filePath == "") {
+bool FileChecker::removeFile(const QString filePath) {
+    QString fileName = filePath;
+    fileName = fileName.replace(QRegExp("(.+/.+/)"), "");
+
+    if (fileName == "") {
         return false;
     }
     for (auto i = 0; i < m_files_info.length(); i++) {
@@ -91,4 +99,8 @@ bool FileChecker::removeFile(const QString filePath)
 
 bool FileChecker::isEmpty() {
     return this->m_files_info.length() == 0;
+}
+
+void FileChecker::printLog(std::string msg) {
+    m_log->log(msg);
 }

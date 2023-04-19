@@ -13,15 +13,15 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QString currentExecDir = a.applicationDirPath();                        //файл ищем в директории проекта
-    FileChecker checker(&console);                                          //создаем объект класса с выбором метода логирования
+    FileChecker checker(&console);                                          //создаем объект класса FileChecker с выбором метода логирования
+    QObject::connect(&checker, SIGNAL(fileChanged(std::string)), &checker, SLOT(printLog(std::string)));
 
-    qDebug() << "Enter file name. Write 'stop' to end. \n";                 //спрашиваем у пользователя имя файла
+    qDebug() << "Enter file name. Write 'stop' to end entering and start checking files. \n";
     std::string temp;
     std::getline(std::cin, temp);
     QString fileName;
 
     while (temp != "stop") {
-        std::cout << std::endl << temp << std::endl;
         fileName = QString::fromStdString(temp);
         QString filePath = currentExecDir + '/' + fileName;
         bool wasAdded = checker.addFile(filePath);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     }
 
     if (checker.isEmpty()) {
-        std::cout << "No files to check" << std::endl;
+        std::cout << "No files to check." << std::endl;
     }
 
     return a.exec();

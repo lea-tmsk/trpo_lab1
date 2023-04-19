@@ -1,11 +1,12 @@
 #ifndef FILECHECKER_H
 #define FILECHECKER_H
 #include <QFile>
+#include <QObject>
 #include "logger.h"
 
-class FileChecker
+class FileChecker : public QObject
 {
-public:
+Q_OBJECT public:
     FileChecker() {};
     FileChecker(ILogger* log);
     FileChecker(const QString filePath, ILogger* log);
@@ -16,6 +17,12 @@ public:
     bool addFile(const QString filePath);
     bool removeFile(const QString filePath);
     bool isEmpty();
+public slots:
+    void printLog(std::string msg);
+
+signals:
+    void fileChanged(std::string msg);
+
 private:
     struct FileInfo {
     public:
