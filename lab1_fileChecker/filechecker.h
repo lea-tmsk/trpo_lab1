@@ -22,6 +22,7 @@ public slots:
 
 signals:
     void fileChanged(std::string msg);
+    void fileAdded(std::string msg);
 
 private:
     struct FileInfo {

@@ -44,6 +44,14 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
     }
 }
 
+FileChecker::~FileChecker() {
+    if (m_files_info.length() > 0) {
+        for (auto i = 0; i < m_files_info.length(); i++) {
+            delete m_files_info[i].m_file;
+        }
+    }
+}
+
 void FileChecker::checkFiles() {
     for (auto i = 0; i < m_files_info.length(); i++) {
         if (m_files_info[i].m_file->exists() == m_files_info[i].m_exists) {
