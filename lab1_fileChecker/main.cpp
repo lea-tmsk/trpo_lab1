@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    QString currentExecDir = a.applicationDirPath();                        //файл ищем в директории проекта
-    FileChecker checker(&console);                                          //создаем объект класса FileChecker с выбором метода логирования
+    QString currentExecDir = a.applicationDirPath();
+    FileChecker checker(&console);
     QObject::connect(&checker, SIGNAL(fileChanged(std::string)), &checker, SLOT(printLog(std::string)));
     QObject::connect(&checker, SIGNAL(fileAdded(std::string)), &checker, SLOT(printLog(std::string)));
 
@@ -27,12 +27,12 @@ int main(int argc, char *argv[])
         QString filePath = currentExecDir + '/' + fileName;
         bool wasAdded = checker.addFile(filePath);
         if (wasAdded) {
-            qDebug() << "Location:" << currentExecDir + '/' + fileName;     //полный путь до файла
+            qDebug() << "Location:" << filePath << "\n";
         }
         std::getline(std::cin, temp);
     }
 
-    while (true && checker.isEmpty() == false) {                                                          //в цикле каждые 100мс проверяем состояние файла
+    while (true && checker.isEmpty() == false) {
         checker.checkFiles();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
