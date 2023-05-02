@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     QString currentExecDir = a.applicationDirPath();                        //файл ищем в директории проекта
     FileChecker checker(&console);                                          //создаем объект класса FileChecker с выбором метода логирования
     QObject::connect(&checker, SIGNAL(fileChanged(std::string)), &checker, SLOT(printLog(std::string)));
+    QObject::connect(&checker, SIGNAL(fileAdded(std::string)), &checker, SLOT(printLog(std::string)));
 
     qDebug() << "Enter file name. Write 'stop' to end entering and start checking files. \n";
     std::string temp;
