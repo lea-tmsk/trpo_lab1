@@ -47,19 +47,18 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
 
 void FileChecker::checkFiles() {
     for (auto i = 0; i < m_files_info.length(); i++) {
-        QString fileName = m_files_info[i].m_path.replace(QRegExp("(.+/.+/)"), "");
         if (m_files_info[i].m_file->exists() == m_files_info[i].m_exists) {
             if (m_files_info[i].m_exists && m_files_info[i].m_size != m_files_info[i].m_file->size()) {
-                emit fileChanged("\nFile '" + fileName.toStdString() + "' changed. \nOld size: " + std::to_string(m_files_info[i].m_size) + " bytes" +
+                emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' changed. \nOld size: " + std::to_string(m_files_info[i].m_size) + " bytes" +
                                  + "\nNew size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
                 m_files_info[i].m_size = m_files_info[i].m_file->size();
             }
         } else {
             if (m_files_info[i].m_exists == true) {
-                emit fileChanged("\nFile '" + fileName.toStdString() + "' deleted.");
+                emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' deleted.");
                 m_files_info[i].m_exists = false;
             } else {
-                emit fileChanged("\nFile '" + fileName.toStdString() + "' created. Size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
+                emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' created. Size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
                 m_files_info[i].m_exists = true;
                 m_files_info[i].m_size = m_files_info[i].m_file->size();
             }
@@ -68,10 +67,7 @@ void FileChecker::checkFiles() {
 }
 
 bool FileChecker::addFile(const QString filePath) {
-    QString fileName = filePath;
-    fileName = fileName.replace(QRegExp("(.+/.+/)"), "");
-
-    if (fileName == "") {
+    if (filePath == "") {
         return false;
     }
     QFile file(filePath);
@@ -89,18 +85,17 @@ bool FileChecker::addFile(const QString filePath) {
 }
 
 bool FileChecker::removeFile(const QString filePath) {
-    QString fileName = filePath;
-    fileName = fileName.replace(QRegExp("(.+/.+/)"), "");
-
-    if (fileName == "") {
+    if (filePath == "") {
         return false;
     }
+
     for (auto i = 0; i < m_files_info.length(); i++) {
         if (m_files_info[i].m_path == filePath) {
             m_files_info.erase(m_files_info.begin() + i);
             return true;
         }
     }
+
     return false;
 }
 

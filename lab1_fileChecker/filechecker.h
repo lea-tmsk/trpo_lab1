@@ -27,10 +27,20 @@ private:
     struct FileInfo {
     public:
         FileInfo(QString path, bool exists, qint64 size) : m_path{path}, m_exists{exists}, m_size{size} {
-            m_file->setFileName(path);
+            m_file = new QFile(path);
+            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
         };
+        FileInfo(QString path) {
+            m_file = new QFile(path);
+            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
+            m_path = path;
+            m_exists = m_file->exists();
+            m_size = m_file->exists() == true ? m_file->size() : 0;
+        }
+        ~FileInfo() {};
         QString m_path;
-        QFile *m_file = new QFile();
+        QString m_file_name;
+        QFile *m_file;
         bool m_exists;
         qint64 m_size;
     };
