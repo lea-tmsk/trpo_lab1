@@ -11,7 +11,7 @@ Q_OBJECT public:
     FileChecker(ILogger* log);
     FileChecker(const QString filePath, ILogger* log);
     FileChecker(QVector<QString> filesPaths, ILogger* log);
-    ~FileChecker() {};
+    ~FileChecker();
 
     void checkFiles();
     bool addFile(const QString filePath);

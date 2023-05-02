@@ -1,6 +1,5 @@
 #include "filechecker.h"
 #include <iostream>
-#include <QRegExp>
 
 FileChecker::FileChecker(ILogger *log) {
     if (log != nullptr) {
@@ -70,16 +69,20 @@ bool FileChecker::addFile(const QString filePath) {
     if (filePath == "") {
         return false;
     }
-    QFile file(filePath);
-    try {
-        m_files_info.append(FileInfo {filePath, file.exists(), file.size()});
-        if (file.exists()) {
-            m_log->log("File added. '" + fileName.toStdString() + "' exists. Size: " + std::to_string(file.size()) + " bytes");
-        } else {
-            m_log->log("File added. '" + fileName.toStdString() + "' doesn't exist.");
-        }
-    }  catch (const std::exception& ex) {
+    int oldLength = this->m_files_info.length();
+
+    this->m_files_info.append(FileInfo(filePath));
+
+    if (oldLength == m_files_info.length()) {
         return false;
+    }
+
+    int index = this->m_files_info.length() - 1;
+
+    if (m_files_info[index].m_exists == true) {
+        emit fileAdded("File added. '" + m_files_info[index].m_file_name.toStdString() + "' exists. Size: " + std::to_string(m_files_info[index].m_size) + " bytes");
+    } else {
+        emit fileAdded("File added. '" + m_files_info[index].m_file_name.toStdString() + "' doesn't exist.");
     }
     return true;
 }
