@@ -1,6 +1,6 @@
 #ifndef FILECHECKER_H
 #define FILECHECKER_H
-#include <QFile>
+#include <QFileInfo>
 #include <QObject>
 #include "logger.h"
 
@@ -11,7 +11,7 @@ Q_OBJECT public:
     FileChecker(ILogger* log);
     FileChecker(const QString filePath, ILogger* log);
     FileChecker(QVector<QString> filesPaths, ILogger* log);
-    ~FileChecker();
+    ~FileChecker() {};
 
     void checkFiles();
     bool addFile(const QString filePath);
@@ -27,21 +27,16 @@ signals:
 private:
     struct FileInfo {
     public:
-        FileInfo(QString path, bool exists, qint64 size) : m_path{path}, m_exists{exists}, m_size{size} {
-            m_file = new QFile(path);
-            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
-        };
         FileInfo(QString path) {
-            m_file = new QFile(path);
-            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
+            QFileInfo temp(path);
             m_path = path;
-            m_exists = m_file->exists();
-            m_size = m_file->exists() == true ? m_file->size() : 0;
+            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
+            m_exists = temp.exists();
+            m_size = temp.size();
         }
         ~FileInfo() {};
         QString m_path;
         QString m_file_name;
-        QFile *m_file;
         bool m_exists;
         qint64 m_size;
     };
