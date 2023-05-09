@@ -44,30 +44,23 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
     }
 }
 
-FileChecker::~FileChecker() {
-    if (m_files_info.length() > 0) {
-        for (auto i = 0; i < m_files_info.length(); i++) {
-            delete m_files_info[i].m_file;
-        }
-    }
-}
-
 void FileChecker::checkFiles() {
     for (auto i = 0; i < m_files_info.length(); i++) {
-        if (m_files_info[i].m_file->exists() == m_files_info[i].m_exists) {
-            if (m_files_info[i].m_exists && m_files_info[i].m_size != m_files_info[i].m_file->size()) {
+        QFileInfo file(m_files_info[i].m_path);
+        if (file.exists() == m_files_info[i].m_exists) {
+            if (m_files_info[i].m_exists && m_files_info[i].m_size != file.size()) {
                 emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' changed. \nOld size: " + std::to_string(m_files_info[i].m_size) + " bytes" +
-                                 + "\nNew size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
-                m_files_info[i].m_size = m_files_info[i].m_file->size();
+                                 + "\nNew size: " + std::to_string(file.size()) + " bytes");
+                m_files_info[i].m_size = file.size();
             }
         } else {
             if (m_files_info[i].m_exists == true) {
                 emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' deleted.");
                 m_files_info[i].m_exists = false;
             } else {
-                emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' created. Size: " + std::to_string(m_files_info[i].m_file->size()) + " bytes");
+                emit fileChanged("\nFile '" + m_files_info[i].m_file_name.toStdString() + "' created. Size: " + std::to_string(file.size()) + " bytes");
                 m_files_info[i].m_exists = true;
-                m_files_info[i].m_size = m_files_info[i].m_file->size();
+                m_files_info[i].m_size = file.size();
             }
         }
     }
