@@ -27,10 +27,6 @@ signals:
 private:
     struct FileInfo {
     public:
-        FileInfo(QString path, bool exists, qint64 size) : m_path{path}, m_exists{exists}, m_size{size} {
-            m_file = new QFile(path);
-            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
-        };
         FileInfo(QString path) {
             m_file = new QFile(path);
             m_file_name = path.replace(QRegExp("(.+/.+/)"), "");

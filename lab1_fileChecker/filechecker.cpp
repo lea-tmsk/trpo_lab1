@@ -13,7 +13,7 @@ FileChecker::FileChecker(const QString filePath, ILogger* log) {
     if (filePath.length() > 0 && log != nullptr) {
         this->m_log = log;
         QFile file(filePath);
-        FileInfo fileInfo = {filePath, file.exists(), file.size()};
+        FileInfo fileInfo = {filePath};
         this->m_files_info.append(fileInfo);
     } else {
         if (filePath == nullptr) {
@@ -32,7 +32,7 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
         QVector<QString>::const_iterator i;
         for (i = filesPaths.constBegin(); i != filesPaths.constEnd(); ++i) {
             QFile currentFile(*i);
-            FileInfo currentFileInfo = {*i, currentFile.exists(), currentFile.size()};
+            FileInfo currentFileInfo = {*i};
             this->m_files_info.append(currentFileInfo);
         }
     } else {
