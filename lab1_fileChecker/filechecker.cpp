@@ -44,6 +44,13 @@ FileChecker::FileChecker(QVector<QString> filesPaths, ILogger* log) {
     }
 }
 
+FileChecker::~FileChecker() {
+    if (m_log != nullptr) {
+        delete m_log;
+        m_log = nullptr;
+    }
+}
+
 void FileChecker::checkFiles() {
     for (auto i = 0; i < m_files_info.length(); i++) {
         QFileInfo file(m_files_info[i].m_path);

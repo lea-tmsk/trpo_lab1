@@ -5,6 +5,7 @@
 class ILogger
 {
 public:
+    virtual ~ILogger() {};
     virtual void log(std::string msg) = 0;
 };
 

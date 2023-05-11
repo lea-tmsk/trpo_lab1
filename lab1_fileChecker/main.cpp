@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QString currentExecDir = a.applicationDirPath();
-    FileChecker checker(&console);
+    QString file1 = "file.txt";
+    FileChecker checker(currentExecDir + '/' + file1, &console);
     QObject::connect(&checker, SIGNAL(fileChanged(std::string)), &checker, SLOT(printLog(std::string)));
     QObject::connect(&checker, SIGNAL(fileAdded(std::string)), &checker, SLOT(printLog(std::string)));
 
