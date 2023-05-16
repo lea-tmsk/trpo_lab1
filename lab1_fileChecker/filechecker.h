@@ -30,7 +30,7 @@ private:
         FileInfo(QString path) {
             QFileInfo temp(path);
             m_path = path;
-            m_file_name = path.replace(QRegExp("(.+/.+/)"), "");
+            m_file_name = temp.fileName();
             m_exists = temp.exists();
             m_size = temp.size();
         }
