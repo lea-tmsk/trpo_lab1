@@ -7,7 +7,6 @@
 class FileChecker : public QObject
 {
 Q_OBJECT public:
-    FileChecker() {};
     FileChecker(ILogger* log);
     FileChecker(const QString filePath, ILogger* log);
     FileChecker(QVector<QString> filesPaths, ILogger* log);
