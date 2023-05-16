@@ -7,15 +7,30 @@
 class FileChecker : public QObject
 {
 Q_OBJECT public:
-    FileChecker(ILogger* log);
-    FileChecker(const QString filePath, ILogger* log);
-    FileChecker(QVector<QString> filesPaths, ILogger* log);
-    ~FileChecker();
+    static FileChecker* getInstance(ILogger* log) {
+        if (!m_instance) {
+            m_instance = new FileChecker(log);
+        }
+        return m_instance;
+    }
+    static FileChecker* getInstance(const QString filePath, ILogger* log) {
+        if (!m_instance) {
+            m_instance = new FileChecker(filePath, log);
+        }
+        return m_instance;
+    }
+    static FileChecker* getInstance(QVector<QString> filesPaths, ILogger* log) {
+        if (!m_instance) {
+            m_instance = new FileChecker(filesPaths, log);
+        }
+        return m_instance;
+    }
 
     void checkFiles();
     bool addFile(const QString filePath);
     bool removeFile(const QString filePath);
     bool isEmpty();
+
 public slots:
     void printLog(std::string msg);
 
@@ -24,6 +39,14 @@ signals:
     void fileAdded(std::string msg);
 
 private:
+    FileChecker(ILogger* log);
+    FileChecker(const QString filePath, ILogger* log);
+    FileChecker(QVector<QString> filesPaths, ILogger* log);
+    ~FileChecker();
+
+    FileChecker(const FileChecker&);
+    FileChecker& operator=(FileChecker&);
+
     struct FileInfo {
     public:
         FileInfo(QString path) {
@@ -39,7 +62,7 @@ private:
         bool m_exists;
         qint64 m_size;
     };
-
+    static FileChecker* m_instance;// = nullptr;
     QVector<FileInfo> m_files_info;
     ILogger* m_log;
 };

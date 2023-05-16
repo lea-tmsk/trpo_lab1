@@ -1,6 +1,8 @@
 #include "filechecker.h"
 #include <iostream>
 
+FileChecker* FileChecker::m_instance = nullptr;
+
 FileChecker::FileChecker(ILogger *log) {
     if (log != nullptr) {
         this->m_log = log;
