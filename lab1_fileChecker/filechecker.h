@@ -7,6 +7,12 @@
 class FileChecker : public QObject
 {
 Q_OBJECT public:
+    static FileChecker* getInstance() {
+        if (!m_instance) {
+            return nullptr;
+        }
+        return m_instance;
+    }
     static FileChecker* getInstance(ILogger* log) {
         if (!m_instance) {
             m_instance = new FileChecker(log);
