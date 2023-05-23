@@ -40,8 +40,10 @@ int main(int argc, char *argv[])
             std::getline(std::cin, temp);
         }
 
+        FileChecker* checker1 = FileChecker::getInstance();
+
         while (true && checker->isEmpty() == false) {
-            checker->checkFiles();
+            checker1->checkFiles();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
