@@ -68,7 +68,7 @@ private:
         bool m_exists;
         qint64 m_size;
     };
-    static FileChecker* m_instance;// = nullptr;
+    static FileChecker* m_instance;
     QVector<FileInfo> m_files_info;
     ILogger* m_log;
 };
