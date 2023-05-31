@@ -33,6 +33,7 @@ Q_OBJECT public:
     }
 
     void checkFiles();
+    void setLog(ILogger* log);
     bool addFile(const QString filePath);
     bool removeFile(const QString filePath);
     bool isEmpty();
