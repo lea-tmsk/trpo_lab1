@@ -7,29 +7,9 @@
 class FileChecker : public QObject
 {
 Q_OBJECT public:
-    static FileChecker* getInstance() {
-        if (!m_instance) {
-            return nullptr;
-        }
-        return m_instance;
-    }
-    static FileChecker* getInstance(ILogger* log) {
-        if (!m_instance) {
-            m_instance = new FileChecker(log);
-        }
-        return m_instance;
-    }
-    static FileChecker* getInstance(const QString filePath, ILogger* log) {
-        if (!m_instance) {
-            m_instance = new FileChecker(filePath, log);
-        }
-        return m_instance;
-    }
-    static FileChecker* getInstance(QVector<QString> filesPaths, ILogger* log) {
-        if (!m_instance) {
-            m_instance = new FileChecker(filesPaths, log);
-        }
-        return m_instance;
+    static FileChecker& getInstance() {
+        static FileChecker instance(nullptr);
+        return instance;
     }
 
     void checkFiles();
