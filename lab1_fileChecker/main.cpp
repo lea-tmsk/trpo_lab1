@@ -22,8 +22,10 @@ int main(int argc, char *argv[])
         }
 //        FileChecker checker(currentExecDir + '/' + file1, &console);
         FileChecker& checker = FileChecker::getInstance();
-        QObject::connect(checker, SIGNAL(fileChanged(std::string)), checker, SLOT(printLog(std::string)));
-        QObject::connect(checker, SIGNAL(fileAdded(std::string)), checker, SLOT(printLog(std::string)));
+        checker.setLog(&console);
+
+        QObject::connect(&checker, &FileChecker::fileChanged, &checker, &FileChecker::printLog);
+        QObject::connect(&checker, &FileChecker::fileAdded, &checker, &FileChecker::printLog);
 
         qDebug() << "Enter file name. Write 'stop' to end entering and start checking files. \n";
         std::string temp;
